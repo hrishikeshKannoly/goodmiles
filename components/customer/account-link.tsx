@@ -17,5 +17,5 @@ export function AccountLink() {
     const { data } = client.auth.onAuthStateChange(() => { window.setTimeout(() => void refresh(), 0); });
     return () => { active = false; data.subscription.unsubscribe(); };
   }, []);
-  return <a className="account-link" href={label ? "/booking" : "/login"}>{label ? `Hi, ${label}` : "Sign in"}</a>;
+  return <a className="account-link" href={label ? "/app" : "/login"}>{label ? `Hi, ${label}` : "Sign in"}</a>;
 }
