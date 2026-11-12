@@ -16,6 +16,12 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Local testing without email links
+
+When running `npm run dev`, the sign-in page also offers password sign-in. Use the email address above the password field and the password of an existing Supabase test user. Create or configure that test user in your Supabase project and enable email/password authentication there. The account must have the appropriate admin or worker membership to test those pages. This uses normal Supabase authentication and the existing access rules; it does not bypass them. The password option is hidden in production builds.
+
+Your local app uses the Supabase project configured in `.env.local`, so test requests affect that project's data. Use a separate test project if you do not want to change live data. Sessions are retained in the browser until sign-out or expiration.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
