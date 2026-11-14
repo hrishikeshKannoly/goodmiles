@@ -61,3 +61,50 @@
 }
 .customer-bottom .app-icon{transition:transform .2s ease}.dash-shortcuts button{animation-fill-mode:backwards}.auth-card input,.auth-card select,.dash-site-link{transition:border-color .2s ease,color .2s ease}
 @media(prefers-reduced-motion:reduce){.customer-app *,.auth-page *{animation:none!important;transition:none!important}.customer-app .dash-main-action:hover,.customer-app .customer-button:hover,.auth-page .button:not(:disabled):hover,.customer-app .dash-shortcuts button:hover,.customer-app .customer-bottom button:hover .app-icon,.customer-app .dash-text-link:hover .action-arrow{transform:none}}
+
+/* Phone-friendly customer and booking controls. */
+@media (max-width:899px){
+  .customer-shell.has-navigation{padding-bottom:calc(92px + env(safe-area-inset-bottom, 0px))}
+  .customer-bottom{min-height:64px;padding-left:env(safe-area-inset-left, 0px);padding-right:env(safe-area-inset-right, 0px)}
+  .customer-bottom button{min-height:48px;touch-action:manipulation}
+  .customer-app .dash-text-link{min-height:44px;align-items:center}
+  .customer-app .customer-signout{min-height:48px}
+  .dashboard-content,.dash-card,.visit-card,.dash-placeholder{overflow-wrap:anywhere}
+  .auth-card input,.auth-card select{font-size:16px}
+  .auth-card .button,.customer-button,.dash-main-action{min-height:48px;touch-action:manipulation}
+}
+@media (max-width:600px){
+  .customer-header{padding-left:max(20px,env(safe-area-inset-left, 0px));padding-right:max(20px,env(safe-area-inset-right, 0px))}
+  .customer-welcome .customer-button{display:flex;width:100%;max-width:360px}
+  .dashboard-content{padding-bottom:calc(105px + env(safe-area-inset-bottom, 0px))}
+  .auth-page{padding-left:max(20px,env(safe-area-inset-left, 0px));padding-right:max(20px,env(safe-area-inset-right, 0px))}
+  .auth-card{max-width:100%}
+  .auth-card input,.auth-card select{max-width:100%;min-width:0}
+}
+
+/* Keep dashboard cards and navigation readable at narrow widths. */
+@media (min-width:601px) and (max-width:899px){
+  .dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dash-next{grid-column:1 / -1}
+}
+@media (max-width:600px){
+  .dash-grid,.dash-shortcuts,.dash-plans,.dash-account-grid,.dash-placeholder-list{grid-template-columns:minmax(0,1fr)}
+  .dash-next{grid-column:auto}
+  .customer-bottom{gap:0;justify-content:space-evenly}
+  .customer-bottom button{min-width:0;flex:1}
+  .dashboard-content,.dash-card,.visit-card,.dash-placeholder{overflow-wrap:break-word}
+}
+
+/* Lift the three overview tiles on hover and keyboard focus. */
+.dash-grid .dash-card{animation-fill-mode:backwards}
+.dash-grid .dash-icon{transition:transform .22s ease,background-color .22s ease}
+.dash-grid .dash-text-link .action-arrow{transition:transform .22s ease}
+@media (hover:hover) and (pointer:fine){
+  .dash-grid .dash-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px #142c451a;border-color:#b8d9e9}
+  .dash-grid .dash-card:hover .dash-icon{transform:scale(1.08);background:#d5ebf5}
+  .dash-grid .dash-card:hover .dash-text-link .action-arrow{transform:translateX(4px)}
+}
+.dash-grid .dash-card:focus-within{box-shadow:0 10px 24px #142c4518;border-color:#8dc9e8}
+@media (prefers-reduced-motion:reduce){
+  .dash-grid .dash-card:hover,.dash-grid .dash-card:hover .dash-icon,.dash-grid .dash-card:hover .dash-text-link .action-arrow{transform:none}
+}
