@@ -88,6 +88,8 @@ Use the public production domain for customer testing. Deployment-specific or pr
 
 Deploying the frontend does **not** apply database migrations. Apply pending migrations separately to the correct Supabase project and verify the booking and role flows. In particular, `202611110001_booking_transitions.sql` adds database checks for administrative booking transitions; its presence in the repository does not establish that it has been applied to a live database.
 
+The vehicle category and catalogue migrations (`202611170001` and `202611170002`) create five pricing categories, a review category, and a snapshot of passenger-car and MPV models from `@meterapp/vehicle-db`. Only the examples discussed have an initial classification; the rest need review. Admins can update `vehicle_models.category_id`, and refreshing the seed with `node scripts/generate-vehicle-seed.cjs` leaves existing assignments unchanged when the seed is applied. Sample plan rates in `app/app/custom-plan.tsx` are not final. Applying migrations is required before category lookup can work.
+
 ## Project structure
 
 ```text

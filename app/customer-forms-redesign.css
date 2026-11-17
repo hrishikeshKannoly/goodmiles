@@ -1,0 +1,262 @@
+/* Hallmark · brand: goodmiles · redesign: full · scope: app · pages: login and booking */
+/* Hallmark · pre-emit critique: P4 H4 E4 S3 R4 V3 · weakest: S; the request form is organised around the customer's car and parking. */
+:root {
+  --gm-form-ink: #142c45;
+  --gm-form-muted: #4d6577;
+  --gm-form-paper: #f5f8fa;
+  --gm-form-surface: #fdfefe;
+  --gm-form-line: #cbdce6;
+  --gm-form-ice: #8dc9e8;
+  --gm-form-soft: #e6f2f8;
+  --gm-form-hover: #234762;
+  --gm-form-disabled: #d8e3e9;
+  --gm-form-disabled-ink: #405766;
+  --gm-form-focus: #225b7e;
+  --gm-form-shadow: #142c450c;
+  --gm-form-font: Arial, Helvetica, sans-serif;
+}
+.gm-flow {
+  min-height: 100dvh;
+  background: var(--gm-form-paper);
+  color: var(--gm-form-ink);
+  font-family: var(--gm-form-font);
+}
+.gm-flow-header {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid var(--gm-form-line);
+}
+.gm-flow-header .logo {
+  color: var(--gm-form-ink);
+}
+.gm-flow-header .logo span {
+  color: var(--gm-form-ice);
+}
+.gm-flow-header > a:last-child {
+  color: var(--gm-form-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+.gm-flow-layout {
+  width: min(100% - 10%, 1240px);
+  margin: 0 auto;
+  padding: 72px 0 96px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: clamp(48px, 8vw, 128px);
+  align-items: start;
+}
+.gm-flow-intro {
+  position: sticky;
+  top: 48px;
+  max-width: 470px;
+}
+.gm-flow-kicker {
+  margin: 0 0 24px;
+  color: var(--gm-form-muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+.gm-flow-intro h1 {
+  color: var(--gm-form-ink);
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  overflow-wrap: break-word;
+  min-width: 0;
+  margin: 0 0 24px;
+  text-wrap: balance;
+}
+.gm-flow-intro > p:last-child {
+  max-width: 380px;
+  color: var(--gm-form-muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+.gm-flow-panel {
+  min-width: 0;
+  background: var(--gm-form-surface);
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid var(--gm-form-line);
+  box-shadow: none;
+  border-radius: 12px;
+}
+.gm-flow-panel h2 {
+  margin: 0 0 12px;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--gm-form-ink);
+  text-wrap: balance;
+}
+.gm-flow-panel p {
+  color: var(--gm-form-muted);
+  line-height: 1.6;
+  font-size: 15px;
+  overflow-wrap: break-word;
+}
+.gm-flow-panel form {
+  margin: 28px 0 0;
+}
+.gm-flow-panel form:not(:has(fieldset)) {
+  display: grid;
+  gap: 12px;
+}
+.gm-flow-panel label {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--gm-form-ink);
+  font-weight: 600;
+  font-size: 14px;
+}
+.gm-flow-panel input,
+.gm-flow-panel select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid var(--gm-form-line);
+  border-radius: 6px;
+  background: var(--gm-form-surface);
+  color: var(--gm-form-ink);
+  font: inherit;
+  font-size: 16px;
+}
+.gm-flow-panel input:hover,
+.gm-flow-panel select:hover {
+  border-color: var(--gm-form-hover);
+}
+.gm-flow-button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 16px;
+  padding: 12px 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--gm-form-ink);
+  border-radius: 6px;
+  background: var(--gm-form-ink);
+  color: var(--gm-form-surface);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.gm-flow-button:hover:not(:disabled) {
+  background: var(--gm-form-hover);
+  border-color: var(--gm-form-hover);
+}
+.gm-flow-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.gm-flow-button:disabled {
+  background: var(--gm-form-disabled);
+  border-color: var(--gm-form-disabled);
+  color: var(--gm-form-disabled-ink);
+  cursor: not-allowed;
+}
+.gm-flow-button-secondary {
+  background: var(--gm-form-surface);
+  color: var(--gm-form-ink);
+  border-color: var(--gm-form-line);
+}
+.gm-flow-button-secondary:hover:not(:disabled) {
+  color: var(--gm-form-surface);
+}
+.gm-flow a:focus-visible,
+.gm-flow button:focus-visible,
+.gm-flow input:focus-visible,
+.gm-flow select:focus-visible {
+  outline: 3px solid var(--gm-form-focus);
+  outline-offset: 3px;
+}
+.gm-flow-test {
+  border-top: 1px solid var(--gm-form-line);
+  padding-top: 24px;
+}
+.gm-flow-status:empty {
+  display: none;
+}
+.gm-flow-account {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gm-form-line);
+}
+.gm-flow-panel fieldset {
+  border: 0;
+  border-bottom: 1px solid var(--gm-form-line);
+  padding: 0 0 28px;
+  margin: 0 0 28px;
+  min-width: 0;
+}
+.gm-flow-panel legend {
+  padding: 0;
+  margin: 0 0 20px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.gm-flow-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+@media (max-width: 800px) {
+  .gm-flow-header {
+    padding: 24px 6%;
+  }
+  .gm-flow-layout {
+    width: min(100% - 12%, 600px);
+    padding: 44px 0 72px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .gm-flow-intro {
+    position: static;
+  }
+  .gm-flow-kicker {
+    margin-bottom: 16px;
+  }
+  .gm-flow-intro h1 {
+    font-size: clamp(38px, 10vw, 52px);
+    margin-bottom: 16px;
+  }
+  .gm-flow-intro > p:last-child {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 480px) {
+  .gm-flow-header {
+    padding: 20px;
+  }
+  .gm-flow-layout {
+    width: auto;
+    margin: 0 20px;
+    padding-top: 36px;
+  }
+  .gm-flow-panel {
+    padding: 24px 20px;
+  }
+  .gm-flow-fields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gm-flow * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

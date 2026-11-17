@@ -1,0 +1,504 @@
+/* Hallmark · brand: goodmiles · redesign: full · page: homepage · job: request a car-care visit */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V3 · weakest: variety; the service and visit sections use distinct layouts. */
+:root {
+  --gm-ink: #142c45;
+  --gm-deep: #091c2c;
+  --gm-blue: #8dc9e8;
+  --gm-paper: #f5f8fa;
+  --gm-white: #fbfdff;
+  --gm-pale: #e6ebf0;
+  --gm-soft: #dcecf4;
+  --gm-muted: #526b7c;
+  --gm-line: #c6d9e4;
+  --gm-focus: #17618b;
+  --gm-display: Arial, Helvetica, sans-serif;
+}
+.homepage {
+  background: var(--gm-paper);
+  color: var(--gm-ink);
+  font-family: var(--gm-display);
+  overflow-x: clip;
+}
+.homepage * {
+  box-sizing: border-box;
+}
+.homepage :is(a, button, summary):focus-visible {
+  outline: 3px solid var(--gm-focus);
+  outline-offset: 4px;
+}
+.homepage :is(a, button, summary):active {
+  transform: translateY(1px);
+}
+.homepage h1,
+.homepage h2,
+.homepage h3 {
+  color: inherit;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  overflow-wrap: break-word;
+  min-width: 0;
+  text-wrap: balance;
+}
+.homepage p {
+  line-height: 1.65;
+}
+.homepage .eyebrow {
+  font-size: 14px;
+  letter-spacing: 0;
+  color: var(--gm-muted);
+  font-weight: 500;
+  margin: 0 0 16px;
+  text-transform: none;
+}
+.homepage .eyebrow.light {
+  color: var(--gm-blue);
+}
+.homepage .nav {
+  position: relative;
+  z-index: 3;
+  height: auto;
+  min-height: 84px;
+  padding: 20px max(5%, calc((100% - 1320px) / 2));
+  background: var(--gm-white);
+  border: 0;
+  color: var(--gm-ink);
+  gap: 24px;
+}
+.homepage .nav .logo {
+  color: var(--gm-ink);
+}
+.homepage .nav nav {
+  gap: 28px;
+}
+.homepage .nav nav a,
+.homepage .account-link {
+  color: var(--gm-ink);
+  font-size: 14px;
+}
+.homepage .nav-cta {
+  background: var(--gm-ink);
+  border: 1px solid var(--gm-ink);
+  color: var(--gm-white);
+  font-size: 14px;
+  padding: 12px 20px;
+}
+.homepage .nav-account {
+  gap: 20px;
+}
+.homepage .hero {
+  min-height: min(720px, calc(100svh - 84px));
+  height: auto;
+  max-height: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--gm-deep);
+  color: var(--gm-white);
+  overflow: clip;
+}
+.homepage .hero-image {
+  position: absolute;
+  inset: 0 0 0 43%;
+  background-image:
+    linear-gradient(90deg, var(--gm-deep), transparent 30%),
+    url("/images/hero-sedan.png");
+  background-position: center;
+  background-size: cover;
+}
+.homepage .hero-content {
+  padding: 96px 0 112px max(5%, calc((100% - 1320px) / 2));
+  max-width: 760px;
+}
+.homepage .hero h1 {
+  font-size: clamp(56px, 5.6vw, 84px);
+  line-height: 1.01;
+  letter-spacing: -0.06em;
+  margin: 0 0 24px;
+}
+.homepage .hero-copy {
+  font-size: 18px;
+  color: var(--gm-pale);
+  max-width: 430px;
+}
+.homepage .actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+.homepage .button {
+  font-size: 14px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-weight: 600;
+}
+.homepage .primary {
+  background: var(--gm-blue);
+  color: var(--gm-deep);
+}
+.homepage .outline {
+  border: 1px solid var(--gm-line);
+  color: var(--gm-white);
+}
+.homepage .hero-bottom {
+  display: none;
+}
+.homepage .section {
+  padding: 112px max(5%, calc((100% - 1320px) / 2));
+}
+.homepage .section h2 {
+  font-size: clamp(38px, 4.1vw, 58px);
+  line-height: 1.08;
+  margin: 0 0 24px;
+}
+.homepage .intro {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 8%;
+  align-items: center;
+}
+.homepage .intro-photo {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 490px;
+}
+.homepage .intro-copy {
+  grid-column: 1;
+  max-width: 490px;
+  padding: 0;
+  color: var(--gm-muted);
+}
+.homepage .text-link {
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--gm-ink);
+  margin-top: 16px;
+  border-bottom: 1px solid var(--gm-ink);
+  padding-bottom: 4px;
+}
+.homepage .details {
+  background: var(--gm-soft);
+  color: var(--gm-ink);
+}
+.homepage .details-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 32px;
+}
+.homepage .detail-photo {
+  min-height: 380px;
+}
+.homepage .details > p:last-child {
+  color: var(--gm-muted);
+  font-size: 18px;
+  line-height: 1.4;
+}
+.homepage .services {
+  background: var(--gm-paper);
+}
+.homepage .section-heading {
+  align-items: end;
+  gap: 36px;
+}
+.homepage .section-heading > p {
+  font-size: 16px;
+  color: var(--gm-muted);
+  max-width: 320px;
+}
+.homepage .service-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.homepage .service-panel {
+  min-height: 420px;
+  padding: 36px;
+}
+.homepage .service-panel span {
+  font-size: 14px;
+  letter-spacing: 0;
+  color: var(--gm-blue);
+}
+.homepage .service-panel h3 {
+  font-size: 28px;
+  margin: 12px 0;
+}
+.homepage .service-panel p {
+  font-size: 16px;
+  color: var(--gm-paper);
+}
+.homepage .note {
+  font-size: 14px;
+  color: var(--gm-muted);
+}
+.homepage .how {
+  background: var(--gm-ink);
+  color: var(--gm-white);
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 8%;
+}
+.homepage .steps {
+  display: block;
+  border: 0;
+}
+.homepage .step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 20px;
+  border: 0;
+  border-top: 1px solid var(--gm-muted);
+  padding: 20px 0;
+}
+.homepage .step > span {
+  font-size: 14px;
+  color: var(--gm-blue);
+  margin: 0;
+}
+.homepage .step h3 {
+  font-size: 20px;
+}
+.homepage .step p {
+  font-size: 15px;
+  color: var(--gm-pale);
+}
+.homepage .plans {
+  background: var(--gm-white);
+}
+.homepage .plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.homepage .plan,
+.homepage .plan.featured {
+  background: var(--gm-paper);
+  color: var(--gm-ink);
+  padding: 28px;
+  min-height: 0;
+}
+.homepage .plan-image {
+  margin: 0 0 24px;
+}
+.homepage .plan-top {
+  font-size: 12px;
+  letter-spacing: 0;
+  color: var(--gm-muted);
+}
+.homepage .plan h3 {
+  font-size: 32px;
+  margin: 24px 0;
+}
+.homepage .price {
+  font-size: 29px;
+  font-variant-numeric: tabular-nums;
+}
+.homepage .price small {
+  font-size: 14px;
+  color: var(--gm-muted);
+}
+.homepage .plan p:not(.price),
+.homepage .plan li {
+  font-size: 14px;
+}
+.homepage .plan ul,
+.homepage .featured ul {
+  color: var(--gm-muted);
+}
+.homepage .plan-link {
+  font-size: 14px;
+  letter-spacing: 0;
+  margin-top: auto;
+  padding-top: 24px;
+  color: var(--gm-ink);
+}
+.homepage .trust {
+  background: var(--gm-deep);
+  color: var(--gm-white);
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+.homepage .trust-copy {
+  font-size: 16px;
+  color: var(--gm-pale);
+}
+.homepage .trust-copy li {
+  border-color: var(--gm-muted);
+}
+.homepage .trust-photo {
+  min-height: 340px;
+}
+.homepage .event {
+  background: var(--gm-soft);
+  color: var(--gm-ink);
+}
+.homepage .event p:not(.eyebrow) {
+  font-size: 16px;
+  color: var(--gm-muted);
+}
+.homepage .event-date {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.homepage .event-mark {
+  color: var(--gm-line);
+}
+.homepage .event-mark span {
+  color: var(--gm-blue);
+}
+.homepage .faq {
+  background: var(--gm-paper);
+  color: var(--gm-ink);
+}
+.homepage .faq > div > p:not(.eyebrow) {
+  color: var(--gm-muted);
+  font-size: 16px;
+}
+.homepage .faq details {
+  border-color: var(--gm-line);
+  padding: 20px 0;
+}
+.homepage .faq summary {
+  font-size: 16px;
+}
+.homepage .faq details p {
+  font-size: 15px;
+  color: var(--gm-muted);
+}
+.homepage footer {
+  padding: 48px max(5%, calc((100% - 1320px) / 2));
+  background: var(--gm-ink);
+  color: var(--gm-white);
+}
+.homepage footer p {
+  color: var(--gm-pale);
+  font-size: 14px;
+}
+.homepage footer > a:last-child {
+  font-size: 13px;
+  letter-spacing: 0;
+}
+@media (max-width: 800px) {
+  .homepage .nav {
+    padding: 16px 5%;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .homepage .nav nav {
+    display: flex;
+    order: 3;
+    width: 100%;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 8px 0 0;
+  }
+  .homepage .nav-account {
+    gap: 12px;
+  }
+  .homepage .account-link {
+    max-width: 100px;
+  }
+  .homepage .hero {
+    display: block;
+    min-height: 650px;
+  }
+  .homepage .hero-image {
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, var(--gm-deep), transparent),
+      url("/images/hero-sedan.png");
+    background-position: 60% center;
+  }
+  .homepage .hero-content {
+    padding: 96px 6% 80px;
+  }
+  .homepage .hero h1 {
+    font-size: clamp(46px, 11vw, 64px);
+  }
+  .homepage .section {
+    padding: 72px 6%;
+  }
+  .homepage .intro,
+  .homepage .how,
+  .homepage .trust,
+  .homepage .faq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .homepage .intro-photo {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 320px;
+  }
+  .homepage .intro-copy {
+    grid-column: 1;
+  }
+  .homepage .details-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .homepage .detail-photo {
+    min-height: 230px;
+  }
+  .homepage .service-grid,
+  .homepage .plan-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .homepage .service-panel {
+    min-height: 340px;
+    padding: 24px;
+  }
+  .homepage .how h2 {
+    margin-bottom: 0;
+  }
+  .homepage .trust-photo {
+    min-height: 280px;
+  }
+  .homepage .event-mark {
+    display: none;
+  }
+  .homepage .faq {
+    gap: 20px;
+  }
+  .homepage footer {
+    padding: 40px 6%;
+  }
+}
+@media (max-width: 400px) {
+  .homepage .nav-cta {
+    padding: 12px;
+    font-size: 12px;
+  }
+  .homepage .logo {
+    font-size: 23px;
+  }
+  .homepage .nav nav {
+    gap: 16px;
+  }
+  .homepage .nav nav a {
+    font-size: 13px;
+  }
+  .homepage .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .homepage .actions .button {
+    width: 100%;
+  }
+  .homepage .details-grid {
+    grid-template-columns: 1fr;
+  }
+  .homepage .detail-photo {
+    min-height: 220px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .homepage * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

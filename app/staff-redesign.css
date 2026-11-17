@@ -1,0 +1,296 @@
+/* Hallmark · v2.0.0 · redesign: full · scope: app · brand: goodmiles · screen: service queue */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: hierarchy; the request queue is the primary object. */
+:root {
+  --staff-ink: #142c45;
+  --staff-text: #243b4d;
+  --staff-muted: #4d6576;
+  --staff-ground: #f5f8fa;
+  --staff-paper: #ffffff;
+  --staff-line: #d1dfe7;
+  --staff-tint: #e8f4fa;
+  --staff-focus: #285f81;
+  --staff-disabled: #edf1f4;
+  --staff-disabled-ink: #4d6473;
+  --staff-hover: #244e6a;
+}
+.staff-page {
+  background: var(--staff-ground);
+  color: var(--staff-ink);
+  min-height: 100dvh;
+}
+.staff-page .admin-header {
+  background: var(--staff-ink);
+  color: var(--staff-paper);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 20px max(24px, calc((100% - 1120px) / 2));
+}
+.staff-page .admin-header .logo {
+  color: var(--staff-paper);
+  flex-shrink: 0;
+}
+.staff-page .admin-header .logo span {
+  color: var(--ice);
+}
+.staff-page .admin-header > span {
+  border-left: 1px solid var(--staff-muted);
+  padding-left: 20px;
+  color: var(--staff-paper);
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.staff-page .admin-header > a:last-child:not(.logo) {
+  margin-left: auto;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.staff-page .admin-content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 52px 24px 96px;
+}
+.staff-page .staff-context {
+  color: var(--staff-muted);
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.staff-page .admin-content h1 {
+  font-size: 32px;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  font-weight: 600;
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+.staff-page .admin-content > p:not(.staff-context) {
+  color: var(--staff-muted);
+  font-size: 16px;
+  line-height: 1.55;
+  max-width: 66ch;
+}
+.staff-page .admin-content > p[role="status"] {
+  color: var(--staff-ink);
+  font-weight: 600;
+}
+.staff-page .admin-list {
+  margin-top: 32px;
+  border-top: 1px solid var(--staff-line);
+}
+.staff-page .admin-request,
+.staff-page .worker-job {
+  background: var(--staff-paper);
+  border: 1px solid var(--staff-line);
+  border-radius: 8px;
+  color: var(--staff-ink);
+  padding: 24px;
+}
+.staff-page .admin-list .admin-request {
+  border-top: 0;
+  border-radius: 0;
+}
+.staff-page .admin-list .admin-request:last-child {
+  border-radius: 0 0 8px 8px;
+}
+.staff-page .admin-request h2,
+.staff-page .worker-job h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  margin: 12px 0 8px;
+  text-wrap: balance;
+}
+.staff-page .admin-request h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 8px 0;
+}
+.staff-page .admin-request p,
+.staff-page .worker-job p {
+  color: var(--staff-muted);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.staff-page .admin-status {
+  display: inline-block;
+  background: var(--staff-tint);
+  border-radius: 4px;
+  color: var(--staff-ink);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1.35;
+  padding: 4px 8px;
+  text-transform: capitalize;
+}
+.staff-page .admin-actions {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.staff-page .admin-actions label {
+  display: grid;
+  gap: 8px;
+  color: var(--staff-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.staff-page button,
+.staff-page select,
+.staff-page textarea {
+  font: inherit;
+}
+.staff-page select,
+.staff-page textarea {
+  border: 1px solid var(--staff-line);
+  border-radius: 6px;
+  background: var(--staff-paper);
+  color: var(--staff-ink);
+  min-height: 44px;
+  padding: 8px 12px;
+}
+.staff-page button {
+  min-height: 44px;
+  border: 1px solid var(--staff-ink);
+  border-radius: 6px;
+  background: var(--staff-ink);
+  color: var(--staff-paper);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.staff-page button:hover:not(:disabled) {
+  background: var(--staff-hover);
+  border-color: var(--staff-hover);
+}
+.staff-page button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.staff-page button:disabled {
+  background: var(--staff-disabled);
+  border-color: var(--staff-line);
+  color: var(--staff-disabled-ink);
+  cursor: not-allowed;
+  opacity: 1;
+}
+.staff-page a:focus-visible,
+.staff-page button:focus-visible,
+.staff-page select:focus-visible,
+.staff-page textarea:focus-visible,
+.staff-page input:focus-visible,
+.staff-page summary:focus-visible {
+  outline: 3px solid var(--staff-focus);
+  outline-offset: 3px;
+}
+.staff-page .admin-header a:focus-visible {
+  outline-color: var(--ice);
+}
+.staff-page .admin-incidents {
+  margin-top: 56px;
+}
+.staff-page .admin-incidents > h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+.staff-page .admin-incidents .admin-request {
+  margin-bottom: 12px;
+}
+.staff-page .worker-job {
+  margin: 16px 0;
+}
+.staff-page .worker-job form > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+  margin: 12px 0;
+}
+.staff-page .worker-job input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 4px 0 0;
+  accent-color: var(--staff-ink);
+  flex: none;
+}
+.staff-page .worker-job form > button {
+  margin-top: 12px;
+}
+.staff-page .incident-form {
+  border-color: var(--staff-line);
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.staff-page .incident-form summary {
+  color: var(--staff-focus);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 44px;
+}
+.staff-page .incident-form form {
+  max-width: 640px;
+}
+.staff-page .incident-form form label {
+  display: block;
+  color: var(--staff-text);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 16px 0;
+}
+.staff-page .incident-form select,
+.staff-page .incident-form textarea {
+  width: 100%;
+  margin-top: 8px;
+  font-weight: 400;
+}
+.staff-page .incident-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+@media (max-width: 700px) {
+  .staff-page .admin-header {
+    padding: 20px;
+    gap: 12px;
+  }
+  .staff-page .admin-header > span {
+    padding-left: 12px;
+  }
+  .staff-page .admin-header > a:last-child:not(.logo) {
+    font-size: 12px;
+  }
+  .staff-page .admin-content {
+    padding: 32px 20px 80px;
+  }
+  .staff-page .admin-content h1 {
+    font-size: 28px;
+  }
+  .staff-page .admin-request,
+  .staff-page .worker-job {
+    padding: 20px;
+  }
+  .staff-page .admin-actions {
+    align-items: stretch;
+    margin-top: 20px;
+  }
+  .staff-page .admin-actions label {
+    flex: 1 1 100%;
+  }
+  .staff-page .admin-actions button {
+    flex: 1 1 140px;
+  }
+  .staff-page select,
+  .staff-page textarea {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .staff-page * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

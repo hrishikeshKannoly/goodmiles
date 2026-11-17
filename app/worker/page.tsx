@@ -1,14 +1,225 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import "../staff-redesign.css";
 
-type Job = { id:string; vehicle_number:string; vehicle_category:string; parking_location:string; preferred_date:string; status:string };
-export default function WorkerPage(){
-  const [jobs,setJobs]=useState<Job[]>([]); const [state,setState]=useState("loading"); const [message,setMessage]=useState(""); const [busy,setBusy]=useState(false);
-  async function load(){ const c=supabaseBrowser(); const {data:{user}}=await c.auth.getUser(); if(!user){setState("login");return;} const {data:worker,error}=await c.from("workers").select("user_id,active").eq("user_id",user.id).maybeSingle(); if(error){setState("error");return;} if(!worker?.active){setState("denied");return;} const {data,error:jobError}=await c.rpc("worker_assignments"); if(jobError){setState("error");return;} setJobs(data??[]);setState("ready"); }
-  useEffect(()=>{void load();},[]);
-  async function start(id:string){setBusy(true);setMessage("");const {error}=await supabaseBrowser().rpc("start_assigned_service",{request_id:id});if(error)setMessage("Could not start the service. Please try again.");else{setMessage("Service started.");await load();}setBusy(false);}
-  async function complete(e:React.FormEvent<HTMLFormElement>,id:string){e.preventDefault();setBusy(true);setMessage("");const {error}=await supabaseBrowser().rpc("complete_assigned_service",{request_id:id,checklist:{inspection:true,exterior:true,interior:true,final_check:true}});if(error)setMessage("Could not complete the service. Please try again.");else{setMessage("Service completed.");await load();}setBusy(false);}
-  async function report(e:React.FormEvent<HTMLFormElement>,id:string){e.preventDefault();setBusy(true);setMessage("");const form=e.currentTarget;const fields=new FormData(form);const client=supabaseBrowser();const {data:{user}}=await client.auth.getUser();if(!user){setMessage("Please sign in again.");setBusy(false);return;}const {error}=await client.from("service_incidents").insert({booking_id:id,worker_id:user.id,category:fields.get("category"),notes:String(fields.get("notes")??"").trim()});if(error)setMessage("Could not report the issue. Please try again.");else{form.reset();setMessage("Issue reported to the admin team.");}setBusy(false);}
-  return <main className="admin-page"><header className="admin-header"><a className="logo" href="/">goodmiles<span>.</span></a><span>WORKER</span></header><div className="admin-content"><p className="eyebrow">YOUR ASSIGNMENTS</p><h1>Today’s care.</h1>{state==="loading"&&<p>Loading…</p>}{state==="login"&&<p>Please <a href="/login?next=%2Fworker">sign in</a>.</p>}{state==="denied"&&<p>This account is not an active worker account.</p>}{state==="error"&&<p>Could not load assignments. Check the worker database setup.</p>}{state==="ready"&&<><p role="status">{message}</p>{jobs.length===0?<p>No assignments yet.</p>:jobs.map(j=><article className="worker-job" key={j.id}><span className="admin-status">{j.status}</span><h2>{j.vehicle_category} · {j.vehicle_number}</h2><p>Parking: {j.parking_location}</p><p>Preferred date: {j.preferred_date}</p>{j.status==="confirmed"&&<button disabled={busy} onClick={()=>start(j.id)}>Start service</button>}{j.status==="in_progress"&&<form onSubmit={e=>complete(e,j.id)}><p>Complete all checks before finishing.</p><label><input type="checkbox" required/> Vehicle inspection completed</label><label><input type="checkbox" required/> Exterior care completed</label><label><input type="checkbox" required/> Interior care completed or unavailable</label><label><input type="checkbox" required/> Final inspection completed</label><button disabled={busy}>Complete service</button></form>}{(j.status==="confirmed"||j.status==="in_progress")&&<details className="incident-form"><summary>Report an issue</summary><form onSubmit={e=>report(e,j.id)}><label>Issue type <select name="category" required defaultValue=""><option value="" disabled>Select issue</option>{["Existing damage","Unsafe contamination","Customer unavailable","Vehicle inaccessible","Equipment problem","Accidental damage","Other"].map(x=><option key={x}>{x}</option>)}</select></label><label>Notes <textarea name="notes" required minLength={3} maxLength={2000}/></label><button disabled={busy}>Send report</button></form></details>}</article>)}</>}</div></main>;
+type Job = {
+  id: string;
+  vehicle_number: string;
+  vehicle_category: string;
+  parking_location: string;
+  preferred_date: string;
+  status: string;
+};
+export default function WorkerPage() {
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [state, setState] = useState("loading");
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function load() {
+    const c = supabaseBrowser();
+    const {
+      data: { user },
+    } = await c.auth.getUser();
+    if (!user) {
+      setState("login");
+      return;
+    }
+    const { data: worker, error } = await c
+      .from("workers")
+      .select("user_id,active")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (error) {
+      setState("error");
+      return;
+    }
+    if (!worker?.active) {
+      setState("denied");
+      return;
+    }
+    const { data, error: jobError } = await c.rpc("worker_assignments");
+    if (jobError) {
+      setState("error");
+      return;
+    }
+    setJobs(data ?? []);
+    setState("ready");
+  }
+  useEffect(() => {
+    const timer = window.setTimeout(() => void load(), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+  async function start(id: string) {
+    setBusy(true);
+    setMessage("");
+    const { error } = await supabaseBrowser().rpc("start_assigned_service", {
+      request_id: id,
+    });
+    if (error) setMessage("Could not start the service. Please try again.");
+    else {
+      setMessage("Service started.");
+      await load();
+    }
+    setBusy(false);
+  }
+  async function complete(e: React.FormEvent<HTMLFormElement>, id: string) {
+    e.preventDefault();
+    setBusy(true);
+    setMessage("");
+    const { error } = await supabaseBrowser().rpc("complete_assigned_service", {
+      request_id: id,
+      checklist: {
+        inspection: true,
+        exterior: true,
+        interior: true,
+        final_check: true,
+      },
+    });
+    if (error) setMessage("Could not complete the service. Please try again.");
+    else {
+      setMessage("Service completed.");
+      await load();
+    }
+    setBusy(false);
+  }
+  async function report(e: React.FormEvent<HTMLFormElement>, id: string) {
+    e.preventDefault();
+    setBusy(true);
+    setMessage("");
+    const form = e.currentTarget;
+    const fields = new FormData(form);
+    const client = supabaseBrowser();
+    const {
+      data: { user },
+    } = await client.auth.getUser();
+    if (!user) {
+      setMessage("Please sign in again.");
+      setBusy(false);
+      return;
+    }
+    const { error } = await client
+      .from("service_incidents")
+      .insert({
+        booking_id: id,
+        worker_id: user.id,
+        category: fields.get("category"),
+        notes: String(fields.get("notes") ?? "").trim(),
+      });
+    if (error) setMessage("Could not report the issue. Please try again.");
+    else {
+      form.reset();
+      setMessage("Issue reported to the admin team.");
+    }
+    setBusy(false);
+  }
+  return (
+    <main className="admin-page staff-page staff-worker">
+      <header className="admin-header">
+        <Link className="logo" href="/">
+          goodmiles<span>.</span>
+        </Link>
+        <span>Worker</span>
+      </header>
+      <div className="admin-content">
+        <p className="staff-context">Your assignments</p>
+        <h1>Today’s care.</h1>
+        {state === "loading" && <p>Loading…</p>}
+        {state === "login" && (
+          <p>
+            Please <Link href="/login?next=%2Fworker">sign in</Link>.
+          </p>
+        )}
+        {state === "denied" && (
+          <p>This account is not an active worker account.</p>
+        )}
+        {state === "error" && (
+          <p>Could not load assignments. Check the worker database setup.</p>
+        )}
+        {state === "ready" && (
+          <>
+            <p role="status">{message}</p>
+            {jobs.length === 0 ? (
+              <p>No assignments yet.</p>
+            ) : (
+              jobs.map((j) => (
+                <article className="worker-job" key={j.id}>
+                  <span className="admin-status">{j.status}</span>
+                  <h2>
+                    {j.vehicle_category} · {j.vehicle_number}
+                  </h2>
+                  <p>Parking: {j.parking_location}</p>
+                  <p>Preferred date: {j.preferred_date}</p>
+                  {j.status === "confirmed" && (
+                    <button disabled={busy} onClick={() => start(j.id)}>
+                      Start service
+                    </button>
+                  )}
+                  {j.status === "in_progress" && (
+                    <form onSubmit={(e) => complete(e, j.id)}>
+                      <p>Complete all checks before finishing.</p>
+                      <label>
+                        <input type="checkbox" required /> Vehicle inspection
+                        completed
+                      </label>
+                      <label>
+                        <input type="checkbox" required /> Exterior care
+                        completed
+                      </label>
+                      <label>
+                        <input type="checkbox" required /> Interior care
+                        completed or unavailable
+                      </label>
+                      <label>
+                        <input type="checkbox" required /> Final inspection
+                        completed
+                      </label>
+                      <button disabled={busy}>Complete service</button>
+                    </form>
+                  )}
+                  {(j.status === "confirmed" || j.status === "in_progress") && (
+                    <details className="incident-form">
+                      <summary>Report an issue</summary>
+                      <form onSubmit={(e) => report(e, j.id)}>
+                        <label>
+                          Issue type{" "}
+                          <select name="category" required defaultValue="">
+                            <option value="" disabled>
+                              Select issue
+                            </option>
+                            {[
+                              "Existing damage",
+                              "Unsafe contamination",
+                              "Customer unavailable",
+                              "Vehicle inaccessible",
+                              "Equipment problem",
+                              "Accidental damage",
+                              "Other",
+                            ].map((x) => (
+                              <option key={x}>{x}</option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          Notes{" "}
+                          <textarea
+                            name="notes"
+                            required
+                            minLength={3}
+                            maxLength={2000}
+                          />
+                        </label>
+                        <button disabled={busy}>Send report</button>
+                      </form>
+                    </details>
+                  )}
+                </article>
+              ))
+            )}
+          </>
+        )}
+      </div>
+    </main>
+  );
 }

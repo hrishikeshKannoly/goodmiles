@@ -1,0 +1,330 @@
+/* Hallmark · shape: app screen · theme: goodmiles brand · redesign: full · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S4 R4 V4 · weakest: specificity; the next visit anchors the layout. */
+:root {
+  --customer-ink: #142c45;
+  --customer-ink-soft: #405d70;
+  --customer-surface: #f5f8fa;
+  --customer-paper: #fbfdfe;
+  --customer-line: #cfdee7;
+  --customer-accent: #8dc9e8;
+  --customer-tint: #e6f2f8;
+  --customer-focus: #245a78;
+  --customer-font: Arial, Helvetica, sans-serif;
+}
+.customer-app {
+  color: var(--customer-ink);
+  background: var(--customer-surface);
+  font-family: var(--customer-font);
+}
+.customer-app .customer-shell {
+  background: var(--customer-surface);
+}
+.customer-app .customer-header {
+  background: var(--customer-paper);
+  border-color: var(--customer-line);
+}
+.customer-app .customer-header .logo {
+  color: var(--customer-ink);
+}
+.customer-app .customer-header .logo span {
+  color: var(--customer-accent);
+}
+.customer-app .customer-header-label,
+.customer-app .customer-eyebrow {
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--customer-ink-soft);
+  font-weight: 600;
+}
+.customer-app .customer-content {
+  max-width: 1200px;
+}
+.customer-app .customer-content h1 {
+  font-size: 36px;
+  line-height: 1.15;
+  color: var(--customer-ink);
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+.customer-app .customer-content h2 {
+  text-wrap: balance;
+}
+.customer-app .customer-muted,
+.customer-app .customer-welcome > p:not(.customer-eyebrow) {
+  font-size: 16px;
+  color: var(--customer-ink-soft);
+}
+.customer-app .dash-heading {
+  align-items: end;
+  margin-bottom: 32px;
+}
+.customer-app .dash-heading h1 {
+  font-size: 36px;
+  margin: 8px 0;
+}
+.customer-app .dash-main-action,
+.customer-app .customer-button {
+  background: var(--customer-ink);
+  color: var(--customer-paper);
+  border-radius: 6px;
+  min-height: 48px;
+  box-shadow: none;
+}
+.customer-app .dash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.customer-app .dash-grid .dash-card {
+  min-height: 0;
+  border: 1px solid var(--customer-line);
+  border-radius: 8px;
+  background: var(--customer-paper);
+  color: var(--customer-ink);
+  box-shadow: none;
+  padding: 24px;
+  animation: none;
+  transform: none;
+}
+.customer-app .dash-grid .dash-next {
+  grid-row: 1 / span 2;
+  background: var(--customer-tint);
+  padding: 32px;
+}
+.customer-app .dash-grid .dash-card-top {
+  margin-bottom: 20px;
+}
+.customer-app .dash-grid .dash-icon {
+  background: var(--customer-tint);
+  color: var(--customer-ink-soft);
+}
+.customer-app .dash-next .dash-icon {
+  background: var(--customer-paper);
+}
+.customer-app .dash-card h2 {
+  font-size: 22px;
+  color: var(--customer-ink);
+  font-weight: 600;
+  margin: 12px 0 8px;
+}
+.customer-app .dash-next h2 {
+  font-size: 28px;
+}
+.customer-app .dash-card p:not(.customer-eyebrow),
+.customer-app .dash-card small {
+  color: var(--customer-ink-soft);
+  font-size: 14px;
+}
+.customer-app .dash-pill {
+  background: var(--customer-paper);
+  color: var(--customer-ink);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.customer-app .muted-pill {
+  background: var(--customer-surface);
+  color: var(--customer-ink-soft);
+}
+.customer-app .dash-text-link {
+  border-color: var(--customer-line);
+  color: var(--customer-ink);
+  font-size: 14px;
+  min-height: 48px;
+}
+.customer-app .dash-section-heading h2 {
+  font-size: 20px;
+  color: var(--customer-ink);
+}
+.customer-app .dash-shortcuts {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--customer-line);
+  border-bottom: 1px solid var(--customer-line);
+}
+.customer-app .dash-shortcuts button {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--customer-ink);
+  padding: 20px;
+  animation: none;
+  transform: none;
+}
+.customer-app .dash-shortcuts button + button {
+  border-left: 1px solid var(--customer-line);
+}
+.customer-app .dash-shortcuts button > span {
+  background: var(--customer-tint);
+  color: var(--customer-ink);
+}
+.customer-app .dash-shortcuts small,
+.customer-app .visit-card p,
+.customer-app .visit-card small,
+.customer-app .dash-placeholder p,
+.customer-app .customer-footnote {
+  color: var(--customer-ink-soft);
+}
+.customer-app .visit-card,
+.customer-app .dash-placeholder,
+.customer-app .dash-plans .dash-card,
+.customer-app .dash-account-grid .dash-card {
+  background: var(--customer-paper);
+  border: 1px solid var(--customer-line);
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--customer-ink);
+}
+.customer-app .visit-status,
+.customer-app .dash-placeholder span {
+  color: var(--customer-ink-soft);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+}
+.customer-app .customer-bottom {
+  background: var(--customer-paper);
+  border-color: var(--customer-line);
+  box-shadow: none;
+}
+.customer-app .custom-plan { margin: 28px 0 40px; padding: 24px; background: var(--customer-paper); border: 1px solid var(--customer-line); border-radius: 8px; }
+.customer-app .custom-plan h2 { margin: 0 0 8px; }
+.customer-app .custom-plan p { color: var(--customer-ink-soft); line-height: 1.5; }
+.customer-app .custom-plan-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 20px 0; }
+.customer-app .custom-plan-fields label { display: grid; gap: 8px; font-weight: 600; font-size: 14px; }
+.customer-app .custom-plan-fields input, .customer-app .custom-plan-fields select { width: 100%; min-width: 0; min-height: 48px; padding: 12px; border: 1px solid var(--customer-line); border-radius: 6px; background: var(--customer-paper); color: var(--customer-ink); font: inherit; font-size: 16px; }
+.customer-app .custom-plan-fields :focus-visible { outline: 3px solid var(--customer-focus); outline-offset: 3px; }
+.customer-app .custom-plan-total { display: grid; gap: 4px; padding: 20px; background: var(--customer-tint); border-radius: 6px; }
+.customer-app .custom-plan-total strong { font-size: 28px; }
+.customer-app .custom-plan-total small { color: var(--customer-ink-soft); }
+@media (max-width: 600px) { .customer-app .custom-plan { padding: 20px; } .customer-app .custom-plan-fields { grid-template-columns: minmax(0, 1fr); } }
+.customer-app .customer-bottom button {
+  color: var(--customer-ink-soft);
+  border-radius: 6px;
+}
+.customer-app .customer-bottom button[aria-current="page"] {
+  color: var(--customer-ink);
+  background: var(--customer-tint);
+}
+.customer-app a:focus-visible,
+.customer-app button:focus-visible {
+  outline: 3px solid var(--customer-focus);
+  outline-offset: 3px;
+}
+.customer-app a:active,
+.customer-app button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.customer-app button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+@media (min-width: 900px) {
+  .customer-app .customer-shell {
+    padding-left: 0;
+  }
+  .customer-app .customer-shell.has-navigation {
+    padding-top: 0;
+  }
+  .customer-app .customer-header {
+    padding: 0 max(24px, calc((100% - 1200px) / 2));
+  }
+  .customer-app .customer-bottom {
+    position: static;
+    transform: none;
+    width: auto;
+    max-width: 1200px;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    margin: -1px auto 0;
+    border: 0;
+    background: transparent;
+  }
+  .customer-app .customer-bottom button {
+    padding: 8px 16px;
+    min-height: 44px;
+  }
+  .customer-app .customer-content {
+    padding-top: 48px;
+  }
+  .customer-app .customer-shell.has-navigation {
+    display: flex;
+    flex-direction: column;
+  }
+  .customer-app .customer-shell.has-navigation .customer-header {
+    order: 0;
+  }
+  .customer-app .customer-shell.has-navigation .customer-bottom {
+    order: 1;
+  }
+  .customer-app .customer-shell.has-navigation .customer-content {
+    order: 2;
+    width: 100%;
+  }
+}
+@media (max-width: 899px) {
+  .customer-app .customer-bottom {
+    gap: 0;
+  }
+  .customer-app .customer-bottom button {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+  }
+  .customer-app .customer-bottom button[aria-current="page"] {
+    background: transparent;
+    color: var(--customer-ink);
+    font-weight: 700;
+  }
+}
+@media (max-width: 600px) {
+  .customer-app .dashboard-content {
+    padding: 32px 20px calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+  .customer-app .customer-content h1,
+  .customer-app .dash-heading h1 {
+    font-size: 30px;
+  }
+  .customer-app .dash-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+  .customer-app .dash-grid .dash-next {
+    grid-row: auto;
+    padding: 24px;
+  }
+  .customer-app .dash-shortcuts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .customer-app .dash-shortcuts button + button {
+    border-left: 0;
+    border-top: 1px solid var(--customer-line);
+  }
+  .customer-app .dash-shortcuts button {
+    padding: 16px;
+  }
+  .customer-app .dash-shortcuts button > span {
+    left: 16px;
+    top: 16px;
+  }
+  .customer-app .dash-plans,
+  .customer-app .dash-account-grid,
+  .customer-app .dash-placeholder-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .customer-app * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
