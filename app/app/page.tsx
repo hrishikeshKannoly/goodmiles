@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import "./customer-redesign.css";
+import "./plans-redesign.css";
 import { CustomPlan } from "./custom-plan";
 
 type Visit = {
@@ -416,12 +417,11 @@ export default function CustomerHome() {
               {tab === "plans" && (
                 <>
                   <h1>Care on your terms.</h1>
-                  <CustomPlan />
                   <p className="customer-muted">
                     Explore the memberships we’re preparing. Plan selection and
                     subscriptions are coming soon.
                   </p>
-                  <div className="dash-plans">
+                  <div className="dash-plans plans-choice-grid">
                     {plans.map((p) => (
                       <article className="dash-card" key={p.name}>
                         <h2>{p.name}</h2>
@@ -437,11 +437,17 @@ export default function CustomerHome() {
                         </span>
                       </article>
                     ))}
+                    <article className="dash-card plans-custom-choice">
+                      <h2>Custom plan</h2>
+                      <p>Choose the number of exterior and interior washes that works for you.</p>
+                      <a href="#custom-plan" className="plans-custom-link">Build your plan <span aria-hidden="true">→</span></a>
+                    </article>
                   </div>
                   <p className="customer-footnote">
                     Prices and plan details are provisional. No subscription or
                     payment is collected here.
                   </p>
+                  <CustomPlan />
                   <a className="customer-button dash-action" href="/booking">
                     Request an individual visit{" "}
                     <span className="action-arrow">
@@ -460,6 +466,7 @@ export default function CustomerHome() {
                     <article className="dash-card">
                       <h2>{latest?.customer_name || "goodmiles customer"}</h2>
                       <p>{email}</p>
+                      <Link className="dash-site-link" href="/login?setPassword=1">Set or change password</Link>
                       <button
                         className="customer-signout"
                         onClick={() => void signOut()}

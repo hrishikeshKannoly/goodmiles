@@ -7,7 +7,7 @@ A web app for requesting and managing car-care visits at apartment communities. 
 ## What it does
 
 - **Public website:** presents the service, provisional plan information, and a visit request entry point.
-- **Customer account:** signs in with an email link, requests a visit, and shows request status and visit history. Details from the latest request are reused when filling in a new request.
+- **Customer account:** signs in with a password or email link, requests a visit, and shows request status and visit history. Details from the latest request are reused when filling in a new request.
 - **Operations:** lets authorized admins review requests, assign active workers, confirm or cancel requests, and review reported incidents. The team contacts customers manually to confirm visits.
 - **Worker dashboard:** shows assigned visits and lets active workers start and complete services with a checklist or report an issue.
 - **Mobile experience:** provides responsive customer screens, accessible focus styles, reduced-motion support, and an installable web-app manifest.
@@ -50,9 +50,9 @@ You need Node.js compatible with the installed Next.js version, npm, and a Supab
 
    Open [http://localhost:3000](http://localhost:3000). Use the same browser and device to request and open an email sign-in link.
 
-### Local password sign-in
+### Passwords and email links
 
-In development, the sign-in page also offers password sign-in for an existing Supabase test account. Enable email/password authentication in the test project and set a password for that user. The option is hidden in production builds and does not bypass Supabase authentication or database policies.
+Enable email/password authentication in Supabase. Customers can sign in with a password or request an email sign-in link. To create or reset a password, select the email-link option and request the link to set a password; open it on the same device and browser. An existing signed-in customer can also open `/login?setPassword=1` to set a password. Supabase's configured password and reauthentication rules apply. The redirect allow list must include the `/login` callback with its query parameters. Test email delivery and the complete flow on the intended domain before deploying.
 
 ### Admin and worker access
 

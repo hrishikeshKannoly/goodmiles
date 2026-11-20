@@ -9,6 +9,9 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [method, setMethod] = useState<"password" | "link" | "set-password">("password");
+  const [canSetPassword, setCanSetPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   useEffect(() => {
@@ -16,6 +19,8 @@ export default function LoginPage() {
     let active = true;
     const params = new URLSearchParams(window.location.search);
     const requested = params.get("next");
+    const settingPassword = params.get("setPassword") === "1";
+    const methodTimer = settingPassword ? window.setTimeout(() => setMethod("set-password"), 0) : undefined;
     const category = params.get("category");
     const destination =
       requested === "/admin" || requested === "/worker"
@@ -24,25 +29,32 @@ export default function LoginPage() {
           ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}`
           : "/app";
     void client.auth.getUser().then(({ data: { user } }) => {
-      if (active && user) router.replace(destination);
+      if (active && user) {
+        if (settingPassword) setCanSetPassword(true);
+        else router.replace(destination);
+      }
     });
     const { data: subscription } = client.auth.onAuthStateChange(
       (_event, session) => {
-        if (session?.user) router.replace(destination);
+        if (session?.user) {
+          if (settingPassword) setCanSetPassword(true);
+          else router.replace(destination);
+        }
       },
     );
     return () => {
       active = false;
+      window.clearTimeout(methodTimer);
       subscription.subscription.unsubscribe();
     };
   }, [router]);
-  async function signIn(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function sendLink(setPasswordAfterLink = false) {
     setBusy(true);
     setMessage("");
     try {
       const params = new URLSearchParams(window.location.search);
       const callback = new URL("/login", window.location.origin);
+      if (setPasswordAfterLink) callback.searchParams.set("setPassword", "1");
       if (["/booking", "/admin", "/worker"].includes(params.get("next") ?? ""))
         callback.searchParams.set("next", params.get("next")!);
       if (["Hatchback", "Sedan", "SUV"].includes(params.get("category") ?? ""))
@@ -59,6 +71,26 @@ export default function LoginPage() {
     } catch {
       setMessage("Could not reach the sign-in service. Please try again.");
     }
+    setBusy(false);
+  }
+  async function updatePassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (password !== confirmation) { setMessage("Passwords do not match. Please try again."); return; }
+    setBusy(true);
+    setMessage("");
+    try {
+      const { error } = await supabaseBrowser().auth.updateUser({ password });
+      if (error) setMessage(error.message);
+      else {
+        setPassword("");
+        setConfirmation("");
+        const params = new URLSearchParams(window.location.search);
+        const requested = params.get("next");
+        const category = params.get("category");
+        const destination = requested === "/admin" || requested === "/worker" ? requested : requested === "/booking" ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}` : "/app";
+        router.replace(destination);
+      }
+    } catch { setMessage("Could not update your password. Please try again."); }
     setBusy(false);
   }
   async function signInWithPassword(event: React.FormEvent<HTMLFormElement>) {
@@ -87,11 +119,22 @@ export default function LoginPage() {
       <div className="gm-flow-layout">
         <div className="gm-flow-intro">
           <h1>Welcome in.</h1>
-          <p>Enter your email and we’ll send you a sign-in link.</p>
+          <p>Sign in to manage your car care.</p>
         </div>
         <section className="gm-flow-panel" aria-label="Sign in">
-          <h2>Sign in with email</h2>
-          <form onSubmit={signIn}>
+          {method === "set-password" && canSetPassword ? <>
+          <h2>Set your password</h2>
+          <p>Choose a password to use the next time you sign in.</p>
+          <form onSubmit={updatePassword}>
+            <label htmlFor="new-password">New password</label>
+            <input id="new-password" type="password" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <label htmlFor="confirm-password">Confirm password</label>
+            <input id="confirm-password" type="password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
+            <button className="gm-flow-button" disabled={busy}>{busy ? "Saving…" : "Save password"}</button>
+          </form>
+          </> : method === "set-password" ? <><h2>Open your email link</h2><p>Open the link on the same device and browser to set your password. If the link has expired, request a new one.</p><button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod("link"); setMessage(""); }}>Request a new link</button></> : <>
+          <h2>{method === "password" ? "Sign in with password" : "Sign in with an email link"}</h2>
+          <form onSubmit={method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
             <label htmlFor="email">Email address</label>
             <input
               id="email"
@@ -101,31 +144,27 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button className="gm-flow-button" type="submit" disabled={busy}>
-              {busy ? "Please wait…" : "Send sign-in link"}
-            </button>
-          </form>
-          {process.env.NODE_ENV === "development" && (
-            <form className="gm-flow-test" onSubmit={signInWithPassword}>
-              <p>Local testing: sign in with a test account password.</p>
-              <label htmlFor="test-password">Test account password</label>
+            {method === "password" && <>
+              <label htmlFor="password">Password</label>
               <input
-                id="test-password"
+                id="password"
                 type="password"
                 autoComplete="current-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
-                className="gm-flow-button gm-flow-button-secondary"
-                type="submit"
-                disabled={busy || !email}
-              >
-                {busy ? "Please wait…" : "Sign in with password"}
-              </button>
-            </form>
-          )}
+            </>}
+            <button className="gm-flow-button" type="submit" disabled={busy}>
+              {busy ? "Please wait…" : method === "password" ? "Sign in" : "Send sign-in link"}
+            </button>
+            {method === "link" && <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy || !email} onClick={(event) => { if (!event.currentTarget.form?.reportValidity()) return; void sendLink(true); }}>Send link to set a password</button>}
+          </form>
+          <button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod(method === "password" ? "link" : "password"); setMessage(""); }}>
+            {method === "password" ? "Use an email link instead" : "Use a password instead"}
+          </button>
+          {method === "password" && <p>New here or forgot your password? Use an email link to sign in or set a password.</p>}
+          </>}
           <p className="gm-flow-status" role="status">
             {message}
           </p>

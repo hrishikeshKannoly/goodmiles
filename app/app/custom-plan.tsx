@@ -54,7 +54,7 @@ export function CustomPlan() {
     return () => { active = false; window.clearTimeout(timer); };
   }, [make, model]);
   return (
-    <section className="custom-plan" aria-labelledby="custom-plan-title">
+    <section className="custom-plan" id="custom-plan" aria-labelledby="custom-plan-title">
       <h2 id="custom-plan-title">Build a custom plan</h2>
       <p>Choose your vehicle and how many washes you need. Rates shown are examples for testing and will change.</p>
       <div className="custom-plan-fields">
