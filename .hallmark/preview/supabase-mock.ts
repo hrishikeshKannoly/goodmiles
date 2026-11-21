@@ -1,0 +1,2 @@
+const visits = [{id:'sample-1',customer_name:'Alex',vehicle_number:'KA 01 AB 1234',vehicle_category:'Hatchback',preferred_date:'2099-11-28',status:'requested',created_at:'2026-11-14T00:00:00Z'}];
+export function supabaseBrowser() { return { auth: {getUser: async () => ({data:{user:{id:'test-user',email:'customer@example.test'}},error:null}), onAuthStateChange: () => ({data:{subscription:{unsubscribe(){}}}}), signOut: async () => ({error:null}) }, from: () => ({select(){return this},eq(){return this},order:async () => ({data:visits,error:null})}) }; }

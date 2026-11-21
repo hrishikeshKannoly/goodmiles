@@ -1,0 +1,1 @@
+import React from "react"; import {createRoot} from "react-dom/client"; import "../../app/globals.css"; import "../../app/app/customer-redesign.css"; import Dashboard from "./account"; createRoot(document.getElementById("root")!).render(<Dashboard/>);

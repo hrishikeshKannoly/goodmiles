@@ -69,7 +69,11 @@ export default function BookingPage() {
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle();
-        setSaved(previous ?? null);
+        if (previous) setSaved(previous);
+        else {
+          const { data: profile } = await client.from("customer_profiles").select("customer_name,phone,vehicle_number,vehicle_category").eq("customer_id", user.id).maybeSingle();
+          setSaved(profile ? { ...profile, apartment_id: "", parking_location: "" } : null);
+        }
       }
       setLoading(false);
     }

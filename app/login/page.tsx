@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabaseBrowser } from "@/lib/supabase/browser";
@@ -10,10 +10,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
-  const [method, setMethod] = useState<"password" | "link" | "set-password">("password");
+  const [method, setMethod] = useState<"password" | "signup" | "link" | "set-password">("password");
   const [canSetPassword, setCanSetPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const signingUp = useRef(false);
   useEffect(() => {
     const client = supabaseBrowser();
     let active = true;
@@ -23,7 +24,7 @@ export default function LoginPage() {
     const methodTimer = settingPassword ? window.setTimeout(() => setMethod("set-password"), 0) : undefined;
     const category = params.get("category");
     const destination =
-      requested === "/admin" || requested === "/worker"
+      requested === "/onboarding" ? "/onboarding" : requested === "/admin" || requested === "/worker"
         ? requested
         : requested === "/booking"
           ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}`
@@ -31,14 +32,14 @@ export default function LoginPage() {
     void client.auth.getUser().then(({ data: { user } }) => {
       if (active && user) {
         if (settingPassword) setCanSetPassword(true);
-        else router.replace(destination);
+        else router.replace(user.user_metadata?.onboarding_pending === true ? "/onboarding" : destination);
       }
     });
     const { data: subscription } = client.auth.onAuthStateChange(
       (_event, session) => {
-        if (session?.user) {
+        if (session?.user && !signingUp.current) {
           if (settingPassword) setCanSetPassword(true);
-          else router.replace(destination);
+          else router.replace(session.user.user_metadata?.onboarding_pending === true ? "/onboarding" : destination);
         }
       },
     );
@@ -55,13 +56,13 @@ export default function LoginPage() {
       const params = new URLSearchParams(window.location.search);
       const callback = new URL("/login", window.location.origin);
       if (setPasswordAfterLink) callback.searchParams.set("setPassword", "1");
-      if (["/booking", "/admin", "/worker"].includes(params.get("next") ?? ""))
+      if (["/booking", "/onboarding", "/admin", "/worker"].includes(params.get("next") ?? ""))
         callback.searchParams.set("next", params.get("next")!);
       if (["Hatchback", "Sedan", "SUV"].includes(params.get("category") ?? ""))
         callback.searchParams.set("category", params.get("category")!);
       const { error } = await supabaseBrowser().auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: callback.toString() },
+        options: { emailRedirectTo: callback.toString(), shouldCreateUser: false },
       });
       setMessage(
         error
@@ -87,7 +88,7 @@ export default function LoginPage() {
         const params = new URLSearchParams(window.location.search);
         const requested = params.get("next");
         const category = params.get("category");
-        const destination = requested === "/admin" || requested === "/worker" ? requested : requested === "/booking" ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}` : "/app";
+        const destination = requested === "/admin" || requested === "/worker" || requested === "/onboarding" ? requested : requested === "/booking" ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}` : "/app";
         router.replace(destination);
       }
     } catch { setMessage("Could not update your password. Please try again."); }
@@ -106,6 +107,33 @@ export default function LoginPage() {
     } catch {
       setMessage("Could not reach the sign-in service. Please try again.");
     }
+    setBusy(false);
+  }
+  async function signUp(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (password !== confirmation) {
+      setMessage("Passwords do not match. Please try again.");
+      return;
+    }
+    setBusy(true);
+    signingUp.current = true;
+    setMessage("");
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const callback = new URL("/login", window.location.origin);
+      const category = params.get("category");
+      callback.searchParams.set("next", "/onboarding");
+      if (["Hatchback", "Sedan", "SUV"].includes(category ?? "")) callback.searchParams.set("category", category!);
+      const { data, error } = await supabaseBrowser().auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: callback.toString(), data: { onboarding_pending: true } } });
+      if (error) setMessage(error.message);
+      else if (data.session) router.replace("/onboarding");
+      else if (!data.session) {
+        setPassword("");
+        setConfirmation("");
+        setMessage("If this email can be registered, check your inbox for a confirmation link. Open it in this browser. Already have an account? Sign in or use an email link.");
+      }
+    } catch { setMessage("Could not reach the sign-up service. Please try again."); }
+    signingUp.current = false;
     setBusy(false);
   }
   return (
@@ -133,8 +161,9 @@ export default function LoginPage() {
             <button className="gm-flow-button" disabled={busy}>{busy ? "Saving…" : "Save password"}</button>
           </form>
           </> : method === "set-password" ? <><h2>Open your email link</h2><p>Open the link on the same device and browser to set your password. If the link has expired, request a new one.</p><button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod("link"); setMessage(""); }}>Request a new link</button></> : <>
-          <h2>{method === "password" ? "Sign in with password" : "Sign in with an email link"}</h2>
-          <form onSubmit={method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
+          <h2>{method === "signup" ? "Create your account" : method === "password" ? "Sign in with password" : "Sign in with an email link"}</h2>
+          {method === "signup" && <p>Enter your email and choose a password. You may need to confirm your email before signing in.</p>}
+          <form onSubmit={method === "signup" ? signUp : method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
             <label htmlFor="email">Email address</label>
             <input
               id="email"
@@ -144,26 +173,31 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {method === "password" && <>
+            {(method === "password" || method === "signup") && <>
               <label htmlFor="password">Password</label>
               <input
                 id="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete={method === "signup" ? "new-password" : "current-password"}
+                minLength={method === "signup" ? 8 : undefined}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </>}
+            {method === "signup" && <><label htmlFor="signup-confirmation">Confirm password</label><input id="signup-confirmation" type="password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} /></>}
             <button className="gm-flow-button" type="submit" disabled={busy}>
-              {busy ? "Please wait…" : method === "password" ? "Sign in" : "Send sign-in link"}
+              {busy ? "Please wait…" : method === "signup" ? "Create account" : method === "password" ? "Sign in" : "Send sign-in link"}
             </button>
             {method === "link" && <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy || !email} onClick={(event) => { if (!event.currentTarget.form?.reportValidity()) return; void sendLink(true); }}>Send link to set a password</button>}
           </form>
-          <button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod(method === "password" ? "link" : "password"); setMessage(""); }}>
+          {method !== "signup" && <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy} onClick={() => { setMethod(method === "password" ? "link" : "password"); setMessage(""); }}>
             {method === "password" ? "Use an email link instead" : "Use a password instead"}
+          </button>}
+          <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy} onClick={() => { setMethod(method === "signup" ? "password" : "signup"); setPassword(""); setConfirmation(""); setMessage(""); }}>
+            {method === "signup" ? "Already have an account? Sign in" : "New to goodmiles? Create an account"}
           </button>
-          {method === "password" && <p>New here or forgot your password? Use an email link to sign in or set a password.</p>}
+          {method === "password" && <p>Forgot your password? Use an email link to sign in or set a new password.</p>}
           </>}
           <p className="gm-flow-status" role="status">
             {message}

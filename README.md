@@ -52,7 +52,7 @@ You need Node.js compatible with the installed Next.js version, npm, and a Supab
 
 ### Passwords and email links
 
-Enable email/password authentication in Supabase. Customers can sign in with a password or request an email sign-in link. To create or reset a password, select the email-link option and request the link to set a password; open it on the same device and browser. An existing signed-in customer can also open `/login?setPassword=1` to set a password. Supabase's configured password and reauthentication rules apply. The redirect allow list must include the `/login` callback with its query parameters. Test email delivery and the complete flow on the intended domain before deploying.
+Enable email/password authentication and new-user sign-ups in Supabase. Customers can create an account with an email address and password; when email confirmation is enabled, they must open the confirmation link in the same browser and device. Customers can also sign in with a password or request an email sign-in link. To create or reset a password, select the email-link option and request the link to set a password. An existing signed-in customer can also open `/login?setPassword=1` to set a password. Supabase's configured password and reauthentication rules apply. The redirect allow list must include the `/login` callback with its query parameters. Test email delivery and the complete flow on the intended domain before deploying.
 
 ### Admin and worker access
 
@@ -89,6 +89,8 @@ Use the public production domain for customer testing. Deployment-specific or pr
 Deploying the frontend does **not** apply database migrations. Apply pending migrations separately to the correct Supabase project and verify the booking and role flows. In particular, `202611110001_booking_transitions.sql` adds database checks for administrative booking transitions; its presence in the repository does not establish that it has been applied to a live database.
 
 The vehicle category and catalogue migrations (`202611170001` and `202611170002`) create five pricing categories, a review category, and a snapshot of passenger-car and MPV models from `@meterapp/vehicle-db`. Only the examples discussed have an initial classification; the rest need review. Admins can update `vehicle_models.category_id`, and refreshing the seed with `node scripts/generate-vehicle-seed.cjs` leaves existing assignments unchanged when the seed is applied. Sample plan rates in `app/app/custom-plan.tsx` are not final. Applying migrations is required before category lookup can work.
+
+New password sign-ups go to `/onboarding` after email confirmation to save personal and vehicle details. Apply `202611200001_customer_profiles.sql` before testing this flow. Those details prefill a first booking; subsequent bookings use the latest booking request. The onboarding step does not create a booking.
 
 ## Project structure
 
