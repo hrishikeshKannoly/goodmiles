@@ -100,7 +100,7 @@ export default function LoginPage() {
     setBusy(true);
     setMessage("");
     try {
-      const { error } = await supabaseBrowser().auth.signInWithPassword({
+      const { data, error } = await supabaseBrowser().auth.signInWithPassword({
         email: email.trim(),
         password,
       });
@@ -110,6 +110,18 @@ export default function LoginPage() {
           : error.code === "email_not_confirmed"
             ? "Your email is not confirmed yet. Open the confirmation email, then try again."
             : error.message);
+      } else if (data.session && data.user) {
+        const params = new URLSearchParams(window.location.search);
+        const requested = params.get("next");
+        const category = params.get("category");
+        const categoryQuery = ["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : "";
+        if (data.user.user_metadata?.onboarding_pending === true) {
+          router.replace(requested === "/booking" ? `/onboarding?next=booking${categoryQuery ? `&category=${encodeURIComponent(category!)}` : ""}` : "/onboarding");
+        } else {
+          router.replace(requested === "/booking" ? `/booking${categoryQuery}` : requested === "/admin" || requested === "/worker" || requested === "/onboarding" ? requested : "/app");
+        }
+      } else {
+        setMessage("Sign-in did not complete. Please try again.");
       }
     } catch {
       setMessage("Could not reach the sign-in service. Please try again.");
@@ -158,6 +170,7 @@ export default function LoginPage() {
           <p>Sign in to manage your car care.</p>
         </div>
         <section className="gm-flow-panel" aria-label="Sign in">
+          <p className="gm-flow-status" role="status" aria-live="polite">{message}</p>
           {method === "set-password" && canSetPassword ? <>
           <h2>Set your password</h2>
           <p>Choose a password to use the next time you sign in.</p>
@@ -207,9 +220,6 @@ export default function LoginPage() {
           </button>
           {method === "password" && <p>Forgot your password? Use an email link to sign in or set a new password.</p>}
           </>}
-          <p className="gm-flow-status" role="status">
-            {message}
-          </p>
         </section>
       </div>
     </main>
