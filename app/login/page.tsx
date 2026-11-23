@@ -5,6 +5,16 @@ import Link from "next/link";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import "../customer-forms-redesign.css";
 
+function PasswordInput(props: Omit<React.InputHTMLAttributes<HTMLInputElement>, "type">) {
+  const [visible, setVisible] = useState(false);
+  return <div className="gm-password-field">
+    <input {...props} type={visible ? "text" : "password"} />
+    <button type="button" className="gm-password-toggle" aria-label={`${visible ? "Hide" : "Show"} ${props.id === "confirm-password" || props.id === "signup-confirmation" ? "confirmation password" : "password"}`} aria-pressed={visible} onClick={() => setVisible(!visible)}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>{visible && <path d="M4 20 20 4"/>}</svg>
+    </button>
+  </div>;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -175,15 +185,16 @@ export default function LoginPage() {
           <p>Choose a password to use the next time you sign in.</p>
           <form onSubmit={updatePassword}>
             <label htmlFor="new-password">New password</label>
-            <input id="new-password" type="password" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <PasswordInput id="new-password" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
             <label htmlFor="confirm-password">Confirm password</label>
-            <input id="confirm-password" type="password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
+            <PasswordInput id="confirm-password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
             <button className="gm-flow-button" disabled={busy}>{busy ? "Saving…" : "Save password"}</button>
             <p className="gm-flow-status" role="status" aria-live="polite">{message}</p>
           </form>
           </> : method === "set-password" ? <><h2>Open your email link</h2><p>Open the link on the same device and browser to set your password. If the link has expired, request a new one.</p><button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod("link"); setMessage(""); }}>Request a new link</button></> : <>
           <h2>{method === "signup" ? "Create your account" : method === "password" ? "Sign in with password" : "Sign in with an email link"}</h2>
           {method === "signup" && <p>Enter your email and choose a password to create your account.</p>}
+          {method === "link" && <p>Enter your email to sign in by link, or choose the password link to set a new password.</p>}
           <form onInvalidCapture={() => setMessage(method === "signup" ? "Check your email and enter matching passwords of at least 8 characters." : "Please enter a valid email and complete the required fields.")} onSubmit={method === "signup" ? signUp : method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
             <label htmlFor="email">Email address</label>
             <input
@@ -196,9 +207,8 @@ export default function LoginPage() {
             />
             {(method === "password" || method === "signup") && <>
               <label htmlFor="password">Password</label>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete={method === "signup" ? "new-password" : "current-password"}
                 minLength={method === "signup" ? 8 : undefined}
                 required
@@ -206,7 +216,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </>}
-            {method === "signup" && <><label htmlFor="signup-confirmation">Confirm password</label><input id="signup-confirmation" type="password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} /></>}
+            {method === "signup" && <><label htmlFor="signup-confirmation">Confirm password</label><PasswordInput id="signup-confirmation" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} /></>}
             <button className="gm-flow-button" type="submit" disabled={busy}>
               {busy ? "Please wait…" : method === "signup" ? "Create account" : method === "password" ? "Sign in" : "Send sign-in link"}
             </button>
@@ -219,7 +229,7 @@ export default function LoginPage() {
           <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy} onClick={() => { setMethod(method === "signup" ? "password" : "signup"); setPassword(""); setConfirmation(""); setMessage(""); }}>
             {method === "signup" ? "Already have an account? Sign in" : "New to goodmiles? Create an account"}
           </button>
-          {method === "password" && <p>Forgot your password? Use an email link to sign in or set a new password.</p>}
+          {method === "password" && <p>Forgot your password? Choose “Use an email link instead”, then “Send link to set a password”. You can also change it under Account after signing in.</p>}
           </>}
         </section>
       </div>
