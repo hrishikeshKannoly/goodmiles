@@ -22,6 +22,9 @@ export default function LoginPage() {
   const [confirmation, setConfirmation] = useState("");
   const [method, setMethod] = useState<"password" | "signup" | "link" | "set-password">("password");
   const [canSetPassword, setCanSetPassword] = useState(false);
+  const [accountEmail, setAccountEmail] = useState("");
+  const [passwordUpdated, setPasswordUpdated] = useState(false);
+  const [afterPassword, setAfterPassword] = useState("/app");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const signingUp = useRef(false);
@@ -42,14 +45,14 @@ export default function LoginPage() {
           : "/app";
     void client.auth.getUser().then(({ data: { user } }) => {
       if (active && user) {
-        if (settingPassword) setCanSetPassword(true);
+        if (settingPassword) { setAccountEmail(user.email ?? ""); setCanSetPassword(true); }
         else router.replace(user.user_metadata?.onboarding_pending === true ? onboardingDestination : destination);
       }
     });
     const { data: subscription } = client.auth.onAuthStateChange(
       (_event, session) => {
         if (session?.user && !signingUp.current) {
-          if (settingPassword) setCanSetPassword(true);
+          if (settingPassword) { setAccountEmail(session.user.email ?? ""); setCanSetPassword(true); }
           else router.replace(session.user.user_metadata?.onboarding_pending === true ? onboardingDestination : destination);
         }
       },
@@ -91,8 +94,9 @@ export default function LoginPage() {
     setBusy(true);
     setMessage("");
     try {
-      const { error } = await supabaseBrowser().auth.updateUser({ password });
+      const { data, error } = await supabaseBrowser().auth.updateUser({ password });
       if (error) setMessage(error.message);
+      else if (!data.user) setMessage("The password change could not be confirmed. Please try again.");
       else {
         setPassword("");
         setConfirmation("");
@@ -100,7 +104,9 @@ export default function LoginPage() {
         const requested = params.get("next");
         const category = params.get("category");
         const destination = requested === "/admin" || requested === "/worker" || requested === "/onboarding" ? requested : requested === "/booking" ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}` : "/app";
-        router.replace(destination);
+        setAccountEmail(data.user.email ?? "");
+        setAfterPassword(destination);
+        setPasswordUpdated(true);
       }
     } catch { setMessage("Could not update your password. Please try again."); }
     setBusy(false);
@@ -180,9 +186,14 @@ export default function LoginPage() {
           <p>Sign in to manage your car care.</p>
         </div>
         <section className="gm-flow-panel" aria-label="Sign in">
-          {method === "set-password" && canSetPassword ? <>
+          {method === "set-password" && canSetPassword && passwordUpdated ? <>
+          <h2>Password updated</h2>
+          <p role="status">Your password was updated{accountEmail ? <> for <strong>{accountEmail}</strong></> : null}. Use this email and your new password when signing in.</p>
+          <Link className="gm-flow-button" href={afterPassword}>Continue to your account</Link>
+          </> : method === "set-password" && canSetPassword ? <>
           <h2>Set your password</h2>
           <p>Choose a password to use the next time you sign in.</p>
+          {accountEmail && <p>Signed in as <strong>{accountEmail}</strong></p>}
           <form onSubmit={updatePassword}>
             <label htmlFor="new-password">New password</label>
             <PasswordInput id="new-password" autoComplete="new-password" minLength={8} required value={password} onChange={(e) => setPassword(e.target.value)} />
