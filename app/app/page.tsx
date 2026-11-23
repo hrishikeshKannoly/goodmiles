@@ -96,6 +96,7 @@ export default function CustomerHome() {
   const [today, setToday] = useState("");
   const [email, setEmail] = useState("");
   const [visits, setVisits] = useState<Visit[]>([]);
+  const [profile, setProfile] = useState<{ customer_name: string; vehicle_category: string; vehicle_number: string } | null>(null);
   const [tab, setTab] = useState<Tab>("home");
   useEffect(() => {
     let live = true;
@@ -111,6 +112,11 @@ export default function CustomerHome() {
         return;
       }
       setEmail(user.email ?? "");
+      const { data: profileData } = await c.from("customer_profiles")
+        .select("customer_name,vehicle_category,vehicle_number")
+        .eq("customer_id", user.id).maybeSingle();
+      if (!live) return;
+      setProfile(profileData);
       const { data, error: err } = await c
         .from("booking_requests")
         .select(
@@ -147,12 +153,14 @@ export default function CustomerHome() {
     const { error } = await supabaseBrowser().auth.signOut();
     if (!error) {
       setVisits([]);
+      setProfile(null);
       setEmail("");
       setState("signedout");
     }
   }
   const latest = visits[0];
-  const firstName = latest?.customer_name.trim().split(/\s+/)[0];
+  const firstName = (latest?.customer_name || profile?.customer_name)?.trim().split(/\s+/)[0];
+  const vehicle = latest || profile;
   const next = visits
     .filter(
       (v) =>
@@ -305,11 +313,11 @@ export default function CustomerHome() {
                           <Icon name="car" />
                         </span>
                       </div>
-                      {latest ? (
+                      {vehicle ? (
                         <>
-                          <h2>{latest.vehicle_category}</h2>
-                          <p>{latest.vehicle_number}</p>
-                          <small>From your latest visit request</small>
+                          <h2>{vehicle.vehicle_category}</h2>
+                          <p>{vehicle.vehicle_number}</p>
+                          <small>{latest ? "From your latest visit request" : "From your saved details"}</small>
                         </>
                       ) : (
                         <>
@@ -318,7 +326,7 @@ export default function CustomerHome() {
                         </>
                       )}
                       <a className="dash-text-link" href="/booking">
-                        {latest ? "View booking details" : "Request a visit"}{" "}
+                        Request a visit{" "}
                         <span className="action-arrow">
                           <Icon name="arrow" />
                         </span>
@@ -464,7 +472,7 @@ export default function CustomerHome() {
                   </p>
                   <div className="dash-account-grid">
                     <article className="dash-card">
-                      <h2>{latest?.customer_name || "goodmiles customer"}</h2>
+                      <h2>{latest?.customer_name || profile?.customer_name || "goodmiles customer"}</h2>
                       <p>{email}</p>
                       <Link className="dash-site-link" href="/login?setPassword=1">Set or change password</Link>
                       <button
@@ -481,7 +489,7 @@ export default function CustomerHome() {
                         book again.
                       </p>
                       <a className="dash-text-link" href="/booking">
-                        View booking details{" "}
+                        Request a visit{" "}
                         <span className="action-arrow">
                           <Icon name="arrow" />
                         </span>
