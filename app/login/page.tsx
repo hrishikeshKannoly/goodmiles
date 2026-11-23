@@ -170,7 +170,6 @@ export default function LoginPage() {
           <p>Sign in to manage your car care.</p>
         </div>
         <section className="gm-flow-panel" aria-label="Sign in">
-          <p className="gm-flow-status" role="status" aria-live="polite">{message}</p>
           {method === "set-password" && canSetPassword ? <>
           <h2>Set your password</h2>
           <p>Choose a password to use the next time you sign in.</p>
@@ -180,11 +179,12 @@ export default function LoginPage() {
             <label htmlFor="confirm-password">Confirm password</label>
             <input id="confirm-password" type="password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
             <button className="gm-flow-button" disabled={busy}>{busy ? "Saving…" : "Save password"}</button>
+            <p className="gm-flow-status" role="status" aria-live="polite">{message}</p>
           </form>
           </> : method === "set-password" ? <><h2>Open your email link</h2><p>Open the link on the same device and browser to set your password. If the link has expired, request a new one.</p><button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod("link"); setMessage(""); }}>Request a new link</button></> : <>
           <h2>{method === "signup" ? "Create your account" : method === "password" ? "Sign in with password" : "Sign in with an email link"}</h2>
           {method === "signup" && <p>Enter your email and choose a password to create your account.</p>}
-          <form onSubmit={method === "signup" ? signUp : method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
+          <form onInvalidCapture={() => setMessage(method === "signup" ? "Check your email and enter matching passwords of at least 8 characters." : "Please enter a valid email and complete the required fields.")} onSubmit={method === "signup" ? signUp : method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
             <label htmlFor="email">Email address</label>
             <input
               id="email"
@@ -210,6 +210,7 @@ export default function LoginPage() {
             <button className="gm-flow-button" type="submit" disabled={busy}>
               {busy ? "Please wait…" : method === "signup" ? "Create account" : method === "password" ? "Sign in" : "Send sign-in link"}
             </button>
+            <p className="gm-flow-status" role="status" aria-live="polite">{message}</p>
             {method === "link" && <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy || !email} onClick={(event) => { if (!event.currentTarget.form?.reportValidity()) return; void sendLink(true); }}>Send link to set a password</button>}
           </form>
           {method !== "signup" && <button className="gm-flow-button gm-flow-button-secondary" type="button" disabled={busy} onClick={() => { setMethod(method === "password" ? "link" : "password"); setMessage(""); }}>

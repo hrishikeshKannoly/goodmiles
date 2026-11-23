@@ -189,6 +189,15 @@
 .gm-flow-status:empty {
   display: none;
 }
+.gm-flow-login .gm-flow-status:not(:empty) {
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--gm-form-line);
+  border-radius: 6px;
+  background: var(--gm-form-soft);
+  color: var(--gm-form-ink);
+  font-weight: 600;
+}
 .gm-flow-account {
   padding-bottom: 20px;
   border-bottom: 1px solid var(--gm-form-line);
