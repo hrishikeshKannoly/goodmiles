@@ -23,6 +23,7 @@ export default function LoginPage() {
     const settingPassword = params.get("setPassword") === "1";
     const methodTimer = settingPassword ? window.setTimeout(() => setMethod("set-password"), 0) : undefined;
     const category = params.get("category");
+    const onboardingDestination = `/onboarding${params.get("next") === "/booking" || params.get("after") === "booking" ? `?next=booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `&category=${encodeURIComponent(category!)}` : ""}` : ""}`;
     const destination =
       requested === "/onboarding" ? "/onboarding" : requested === "/admin" || requested === "/worker"
         ? requested
@@ -32,14 +33,14 @@ export default function LoginPage() {
     void client.auth.getUser().then(({ data: { user } }) => {
       if (active && user) {
         if (settingPassword) setCanSetPassword(true);
-        else router.replace(user.user_metadata?.onboarding_pending === true ? "/onboarding" : destination);
+        else router.replace(user.user_metadata?.onboarding_pending === true ? onboardingDestination : destination);
       }
     });
     const { data: subscription } = client.auth.onAuthStateChange(
       (_event, session) => {
         if (session?.user && !signingUp.current) {
           if (settingPassword) setCanSetPassword(true);
-          else router.replace(session.user.user_metadata?.onboarding_pending === true ? "/onboarding" : destination);
+          else router.replace(session.user.user_metadata?.onboarding_pending === true ? onboardingDestination : destination);
         }
       },
     );
@@ -100,10 +101,16 @@ export default function LoginPage() {
     setMessage("");
     try {
       const { error } = await supabaseBrowser().auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
-      if (error) setMessage(error.message);
+      if (error) {
+        setMessage(error.code === "invalid_credentials"
+          ? "We couldn't sign you in. Check your email and password, or create an account if you're new."
+          : error.code === "email_not_confirmed"
+            ? "Your email is not confirmed yet. Open the confirmation email, then try again."
+            : error.message);
+      }
     } catch {
       setMessage("Could not reach the sign-in service. Please try again.");
     }
@@ -123,14 +130,15 @@ export default function LoginPage() {
       const callback = new URL("/login", window.location.origin);
       const category = params.get("category");
       callback.searchParams.set("next", "/onboarding");
+      if (params.get("next") === "/booking") callback.searchParams.set("after", "booking");
       if (["Hatchback", "Sedan", "SUV"].includes(category ?? "")) callback.searchParams.set("category", category!);
       const { data, error } = await supabaseBrowser().auth.signUp({ email: email.trim(), password, options: { emailRedirectTo: callback.toString(), data: { onboarding_pending: true } } });
       if (error) setMessage(error.message);
-      else if (data.session) router.replace("/onboarding");
+      else if (data.session) router.replace(params.get("next") === "/booking" ? `/onboarding?next=booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `&category=${encodeURIComponent(category!)}` : ""}` : "/onboarding");
       else if (!data.session) {
         setPassword("");
         setConfirmation("");
-        setMessage("If this email can be registered, check your inbox for a confirmation link. Open it in this browser. Already have an account? Sign in or use an email link.");
+        setMessage("Your account could not be signed in automatically. If you received a confirmation email, open it on this device. If you already have an account, sign in instead.");
       }
     } catch { setMessage("Could not reach the sign-up service. Please try again."); }
     signingUp.current = false;
@@ -162,7 +170,7 @@ export default function LoginPage() {
           </form>
           </> : method === "set-password" ? <><h2>Open your email link</h2><p>Open the link on the same device and browser to set your password. If the link has expired, request a new one.</p><button className="gm-flow-button gm-flow-button-secondary" type="button" onClick={() => { setMethod("link"); setMessage(""); }}>Request a new link</button></> : <>
           <h2>{method === "signup" ? "Create your account" : method === "password" ? "Sign in with password" : "Sign in with an email link"}</h2>
-          {method === "signup" && <p>Enter your email and choose a password. You may need to confirm your email before signing in.</p>}
+          {method === "signup" && <p>Enter your email and choose a password to create your account.</p>}
           <form onSubmit={method === "signup" ? signUp : method === "password" ? signInWithPassword : (event) => { event.preventDefault(); void sendLink(); }}>
             <label htmlFor="email">Email address</label>
             <input

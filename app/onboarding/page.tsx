@@ -42,7 +42,13 @@ export default function OnboardingPage() {
       else {
         const { error: updateError } = await supabaseBrowser().auth.updateUser({ data: { onboarding_pending: false } });
         if (updateError) setMessage("Your details were saved, but setup could not be completed. Please try again.");
-        else router.replace("/app");
+        else {
+          const params = new URLSearchParams(window.location.search);
+          const category = params.get("category");
+          router.replace(params.get("next") === "booking"
+            ? `/booking${["Hatchback", "Sedan", "SUV"].includes(category ?? "") ? `?category=${encodeURIComponent(category!)}` : ""}`
+            : "/app");
+        }
       }
     } catch { setMessage("Could not save your details. Please check your connection and try again."); }
     setBusy(false);
